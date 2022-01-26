@@ -1,0 +1,114 @@
+type Token @entity {
+  id: ID!
+  tokenId: BigInt!
+  amount: BigInt!
+  owner: Bytes!
+  request: String
+  minter: Bytes
+  transaction: Bytes
+  insertedAt: BigInt!
+  updatedAt: BigInt!
+}
+
+type Approval @entity {
+  id: ID!
+  approver: Bytes!
+  operator: Bytes!
+  isApproved: Boolean!
+  insertedAt: BigInt!
+  updatedAt: BigInt!
+}
+
+type Sale @entity {
+  id: ID!
+  tokenId: BigInt!
+  saleId: BigInt!
+  seller: Bytes!
+  request: String!
+  price: BigInt!
+  amount: BigInt!
+  startTime: BigInt!
+  endTime: BigInt!
+  isCancelled: Boolean!
+  transaction: Bytes!
+  insertedAt: BigInt!
+  updatedAt: BigInt!
+}
+
+type Auction @entity {
+  id: ID!
+  tokenId: BigInt!
+  auctionId: BigInt!
+  seller: Bytes!
+  request: String!
+  price: BigInt!
+  startTime: BigInt!
+  endTime: BigInt!
+  isCancelled: Boolean!
+  transaction: Bytes!
+  insertedAt: BigInt!
+  updatedAt: BigInt!
+}
+
+type Purchase @entity {
+  id: ID!
+  saleId: BigInt!
+  amount: BigInt!
+  buyer: Bytes!
+  transaction: Bytes!
+  insertedAt: BigInt!
+  updatedAt: BigInt!
+}
+
+type Bid @entity {
+  id: ID!
+  auctionId: BigInt!
+  price: BigInt!
+  bidder: Bytes!
+  transaction: Bytes!
+  insertedAt: BigInt!
+  updatedAt: BigInt!
+}
+
+type SaleClaim @entity {
+  id: ID!
+  saleId: BigInt!
+  amount: BigInt!
+  claimer: Bytes!
+  transaction: Bytes!
+  insertedAt: BigInt!
+  updatedAt: BigInt!
+}
+
+type AuctionClaim @entity {
+  id: ID!
+  auctionId: BigInt!
+  claimer: Bytes!
+  transaction: Bytes!
+  insertedAt: BigInt!
+  updatedAt: BigInt!
+}
+
+type SaleBalance @entity {
+  id: ID!
+  owner: Bytes!
+  value: BigInt!
+  insertedAt: BigInt!
+  updatedAt: BigInt!
+}
+
+type AuctionBalance @entity {
+  id: ID!
+  owner: Bytes!
+  value: BigInt!
+  insertedAt: BigInt!
+  updatedAt: BigInt!
+}
+
+type Whitelist @entity {
+  id: ID!
+  address: Bytes!
+  canMint: Boolean!
+  insertedAt: BigInt!
+  updatedAt: BigInt!
+}
