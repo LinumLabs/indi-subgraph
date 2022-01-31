@@ -1,12 +1,12 @@
 {
-  "name": "music-subgraph",
+  "name": "indi-subgraph",
   "license": "UNLICENSED",
   "scripts": {
     "codegen": "graph codegen",
     "build": "graph build",
-    "deploy-dev": "graph deploy --node https://api.thegraph.com/deploy/ saksijas/indi-dev",
-    "deploy-staging": "graph deploy --node https://api.thegraph.com/deploy/ saksijas/indi-staging",
-    "deploy-production": "graph deploy --node https://api.thegraph.com/deploy/ saksijas/indi-production"
+    "deploy-dev": "graph deploy --node https://api.thegraph.com/deploy/ linumlabs/indi-dev",
+    "deploy-staging": "graph deploy --node https://api.thegraph.com/deploy/ linumlabs/indi-staging",
+    "deploy-production": "graph deploy --node https://api.thegraph.com/deploy/ linumlabs/indi-production"
   },
   "dependencies": {
     "@graphprotocol/graph-cli": "0.23.0",
