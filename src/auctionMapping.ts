@@ -85,10 +85,9 @@ export function handleNewAuction(event: NewAuction): void {
 
   let auction = new Auction(id);
 
-  auction.tokenId = event.params.newAuction.tokenId;
+  auction.tokenId = event.params.newAuction.nftId;
   auction.auctionId = event.params.newAuction.id;
   auction.seller = event.transaction.from;
-  auction.request = event.params.newAuction.dbId;
   auction.price = event.params.newAuction.reservePrice;
   auction.startTime = event.params.newAuction.startTime;
   auction.endTime = event.params.newAuction.endTime;

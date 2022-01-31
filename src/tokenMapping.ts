@@ -45,7 +45,8 @@ export function handleMint(event: Mint): void {
 
   if (token != null) {
     token.tokenId = event.params.tokenId;
-    token.request = event.params.dbId;
+    token.categoryId = event.params.categoryId;
+    token.uri = event.params.uri;
     token.minter = event.transaction.from;
     token.transaction = event.transaction.hash;
     token.insertedAt = event.block.timestamp;
@@ -99,7 +100,8 @@ export function handleTransferSingle(event: TransferSingle): void {
 
     // Track out of ecosystem transfers.
     toToken.tokenId = fromToken.tokenId;
-    toToken.request = fromToken.request;
+    toToken.categoryId = fromToken.categoryId;
+    toToken.uri = fromToken.uri;
     toToken.minter = fromToken.minter;
     toToken.transaction = fromToken.transaction;
     toToken.insertedAt = event.block.timestamp;

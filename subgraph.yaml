@@ -6,8 +6,8 @@ dataSources:
     name: Registry
     network: mumbai
     source:
-      address: "0x5B619c6A36d4c377E51C484719123cB033EEf30d"
-      startBlock: 24250949
+      address: "0xCa8a5f27a4f9C9E268b9C1fde3Fc6D6e991e6Cbb"
+      startBlock: 24282688
       abi: Registry
     mapping:
       kind: ethereum/events
@@ -27,8 +27,6 @@ dataSources:
           handler: handleContractStatusChanged
         - event: CurrencyStatusChanged(indexed address,indexed bool)
           handler: handleCurrencyStatusChanged
-        - event: FeeVariablesChanged(indexed uint256,indexed uint256)
-          handler: handleFeeVariablesChanged
         - event: OwnershipTransferred(indexed address,indexed address)
           handler: handleOwnershipTransferred
         - event: SystemWalletUpdated(address)
@@ -38,16 +36,16 @@ dataSources:
     name: Token
     network: mumbai
     source:
-      address: "0x5B619c6A36d4c377E51C484719123cB033EEf30d"
-      startBlock: 24250951
+      address: "0xC68b40a941b1Ed50A2200ec3b7E2a2158dfbCB60"
+      startBlock: 24282688
       abi: Token
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
       language: wasm/assemblyscript
       entities:
-        - ApprovalForAll
-        - Mint
+        - ApprovalForAll        
+        - Mint        
         - OwnershipTransferred
         - RedeemDetailsSet
         - RoyaltyDetailsSet
@@ -62,7 +60,7 @@ dataSources:
       eventHandlers:
         - event: ApprovalForAll(indexed address,indexed address,bool)
           handler: handleApprovalForAll
-        - event: Mint(indexed uint256,string)
+        - event: Mint(indexed uint256,string,string)
           handler: handleMint
         - event: OwnershipTransferred(indexed address,indexed address)
           handler: handleOwnershipTransferred
@@ -85,8 +83,8 @@ dataSources:
     name: Sale
     network: mumbai
     source:
-      address: "0xA989bd25a8B1e56F21e1399ed4e3893398b363eF"
-      startBlock: 24250952
+      address: "0x1280EBECD1f0972a863C3093C707B8A744ad0A1A"
+      startBlock: 24282688
       abi: Sale
     mapping:
       kind: ethereum/events
@@ -107,7 +105,7 @@ dataSources:
           handler: handleBalanceUpdated
         - event: NFTsReclaimed(indexed uint256,indexed address,indexed uint256)
           handler: handleNFTsReclaimed
-        - event: NewSale(indexed uint256,(uint256,address,address,uint256,uint256,uint256,uint256,uint256,uint256,uint256,address,string))
+        - event: NewSale(indexed uint256,(uint256,address,address,uint256,uint256,uint256,uint256,uint256,uint256,uint256,address))
           handler: handleNewSale
         - event: OwnershipTransferred(indexed address,indexed address)
           handler: handleOwnershipTransferred
@@ -120,8 +118,8 @@ dataSources:
     name: Auction
     network: mumbai
     source:
-      address: "0xDAF135e9E9dc25D960c4EDd48c1be0c0820b38B2"
-      startBlock: 24250954
+      address: "0x48D230DD64585e93783e2cbFF9119181F5Dd7426"
+      startBlock: 24282688
       abi: Auction
     mapping:
       kind: ethereum/events
@@ -146,7 +144,7 @@ dataSources:
           handler: handleBidPlaced
         - event: ClaimNFT(uint256,address,address,uint256)
           handler: handleClaimNFT
-        - event: NewAuction(indexed uint256,(uint256,address,address,uint256,uint256,uint256,uint256,address,string))
+        - event: NewAuction(indexed uint256,(uint256,address,address,uint256,uint256,uint256,uint256,address))
           handler: handleNewAuction
         - event: OwnershipTransferred(indexed address,indexed address)
           handler: handleOwnershipTransferred

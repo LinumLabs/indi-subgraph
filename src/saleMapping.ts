@@ -50,10 +50,9 @@ export function handleNewSale(event: NewSale): void {
 
   let sale = new Sale(id);
 
-  sale.tokenId = event.params.newSale.tokenId;
+  sale.tokenId = event.params.newSale.nftId;
   sale.saleId = event.params.newSale.id;
   sale.seller = event.transaction.from;
-  sale.request = event.params.newSale.dbId;
   sale.price = event.params.newSale.price;
   sale.amount = event.params.newSale.amount;
   sale.startTime = event.params.newSale.startTime;
