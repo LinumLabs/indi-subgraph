@@ -1,14 +1,24 @@
 type Token @entity {
   id: ID!
-  tokenId: BigInt!
   amount: BigInt!
-  owner: Bytes!
   categoryId: String
   uri: String
   minter: Bytes
   transaction: Bytes
   insertedAt: BigInt!
   updatedAt: BigInt!
+  tokenBalances: [TokenBalance!]! @derivedFrom(field: "token")
+  sales: [Sale!]! @derivedFrom(field: "token")
+  auctions: [Auction!]! @derivedFrom(field: "token")
+}
+
+type TokenBalance @entity {
+  id: ID!
+  amount: BigInt!
+  owner: Bytes!
+  insertedAt: BigInt!
+  updatedAt: BigInt!
+  token: Token!
 }
 
 type Approval @entity {
@@ -22,8 +32,6 @@ type Approval @entity {
 
 type Sale @entity {
   id: ID!
-  tokenId: BigInt!
-  saleId: BigInt!
   seller: Bytes!
   price: BigInt!
   amount: BigInt!
@@ -33,6 +41,9 @@ type Sale @entity {
   transaction: Bytes!
   insertedAt: BigInt!
   updatedAt: BigInt!
+  token: Token!
+  purchases: [Purchase!]! @derivedFrom(field: "sale")
+  saleClaims: [SaleClaim!]! @derivedFrom(field: "sale")
 }
 
 type Auction @entity {
@@ -47,36 +58,39 @@ type Auction @entity {
   transaction: Bytes!
   insertedAt: BigInt!
   updatedAt: BigInt!
+  token: Token!
+  bids: [Bid!]! @derivedFrom(field: "auction")
+  auctionClaims: [AuctionClaim!]! @derivedFrom(field: "auction")
 }
 
 type Purchase @entity {
   id: ID!
-  saleId: BigInt!
   amount: BigInt!
   buyer: Bytes!
   transaction: Bytes!
   insertedAt: BigInt!
   updatedAt: BigInt!
+  sale: Sale!
 }
 
 type Bid @entity {
   id: ID!
-  auctionId: BigInt!
   price: BigInt!
   bidder: Bytes!
   transaction: Bytes!
   insertedAt: BigInt!
   updatedAt: BigInt!
+  auction: Auction!
 }
 
 type SaleClaim @entity {
   id: ID!
-  saleId: BigInt!
   amount: BigInt!
   claimer: Bytes!
   transaction: Bytes!
   insertedAt: BigInt!
   updatedAt: BigInt!
+  sale: Sale!
 }
 
 type AuctionClaim @entity {
@@ -86,6 +100,7 @@ type AuctionClaim @entity {
   transaction: Bytes!
   insertedAt: BigInt!
   updatedAt: BigInt!
+  auction: Auction!
 }
 
 type SaleBalance @entity {
