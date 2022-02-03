@@ -15,9 +15,7 @@ import {
 } from "../generated/schema";
 
 export function handleAuctionCancelled(event: AuctionCancelled): void {
-  const address = event.transaction.from.toHex();
-  const auctionId = event.params.auctionId.toString();
-  const id = `auctions/${address}/${auctionId}`;
+  const id = event.params.auctionId.toString();
 
   let auction = Auction.load(id);
 
@@ -30,8 +28,7 @@ export function handleAuctionCancelled(event: AuctionCancelled): void {
 }
 
 export function handleBalanceUpdated(event: BalanceUpdated): void {
-  const address = event.params.accountOf.toHex();
-  const id = `auctionBalances/${address}`;
+  const id = event.params.accountOf.toHex();
 
   let balance = AuctionBalance.load(id);
 
@@ -48,12 +45,11 @@ export function handleBalanceUpdated(event: BalanceUpdated): void {
 }
 
 export function handleBidPlaced(event: BidPlaced): void {
-  const hash = event.transaction.hash.toHex();
-  const id = `bids/${hash}`;
+  const id = event.transaction.hash.toHex();
 
   let bid = new Bid(id);
 
-  bid.auctionId = event.params.auctionId;
+  bid.auction = event.params.auctionId.toString();
   bid.price = event.params.amount;
   bid.bidder = event.transaction.from;
   bid.transaction = event.transaction.hash;
@@ -64,12 +60,11 @@ export function handleBidPlaced(event: BidPlaced): void {
 }
 
 export function handleClaimNFT(event: ClaimNFT): void {
-  const hash = event.transaction.hash.toHex();
-  const id = `auctionClaims/${hash}`;
+  const id = event.transaction.hash.toHex();
 
   let claim = new AuctionClaim(id);
 
-  claim.auctionId = event.params.auctionId;
+  claim.auction = event.params.auctionId.toString();
   claim.claimer = event.params.recipient;
   claim.transaction = event.transaction.hash;
   claim.insertedAt = event.block.timestamp;
@@ -79,14 +74,11 @@ export function handleClaimNFT(event: ClaimNFT): void {
 }
 
 export function handleNewAuction(event: NewAuction): void {
-  const address = event.transaction.from.toHex();
   const auctionId = event.params.newAuction.id.toString();
-  const id = `auctions/${address}/${auctionId}`;
 
-  let auction = new Auction(id);
+  let auction = new Auction(auctionId);
 
-  auction.tokenId = event.params.newAuction.nftId;
-  auction.auctionId = event.params.newAuction.id;
+  auction.token = event.params.newAuction.nftId.toString();
   auction.seller = event.transaction.from;
   auction.price = event.params.newAuction.reservePrice;
   auction.startTime = event.params.newAuction.startTime;

@@ -10,8 +10,7 @@ import {
 import { Sale, Purchase, SaleClaim, SaleBalance } from "../generated/schema";
 
 export function handleBalanceUpdated(event: BalanceUpdated): void {
-  const address = event.params.accountOf.toHex();
-  const id = `saleBalances/${address}`;
+  const id = event.params.accountOf.toHex();
 
   let balance = SaleBalance.load(id);
 
@@ -28,12 +27,11 @@ export function handleBalanceUpdated(event: BalanceUpdated): void {
 }
 
 export function handleNFTsReclaimed(event: NFTsReclaimed): void {
-  const hash = event.transaction.hash.toHex();
-  const id = `saleClaims/${hash}`;
+  const id = event.transaction.hash.toHex();
 
   let claim = new SaleClaim(id);
 
-  claim.saleId = event.params.id;
+  claim.sale = event.params.id.toString();
   claim.claimer = event.params.owner;
   claim.amount = event.params.amount;
   claim.transaction = event.transaction.hash;
@@ -44,14 +42,11 @@ export function handleNFTsReclaimed(event: NFTsReclaimed): void {
 }
 
 export function handleNewSale(event: NewSale): void {
-  const address = event.transaction.from.toHex();
-  const saleId = event.params.newSale.id.toString();
-  const id = `sales/${address}/${saleId}`;
+  const id = event.params.newSale.id.toString();
 
   let sale = new Sale(id);
 
-  sale.tokenId = event.params.newSale.nftId;
-  sale.saleId = event.params.newSale.id;
+  sale.token = event.params.newSale.nftId.toString();
   sale.seller = event.transaction.from;
   sale.price = event.params.newSale.price;
   sale.amount = event.params.newSale.amount;
@@ -68,12 +63,11 @@ export function handleNewSale(event: NewSale): void {
 export function handleOwnershipTransferred(event: OwnershipTransferred): void {}
 
 export function handlePurchase(event: PurchaseEvent): void {
-  const hash = event.transaction.hash.toHex();
-  const id = `purchases/${hash}`;
+  const id = event.transaction.hash.toHex();
 
   let purchase = new Purchase(id);
 
-  purchase.saleId = event.params.saleId;
+  purchase.sale = event.params.saleId.toString();
   purchase.buyer = event.params.recipient;
   purchase.amount = event.params.quantity;
   purchase.transaction = event.transaction.hash;
@@ -84,9 +78,7 @@ export function handlePurchase(event: PurchaseEvent): void {
 }
 
 export function handleSaleCancelled(event: SaleCancelled): void {
-  const address = event.transaction.from.toHex();
-  const saleId = event.params.saleId.toString();
-  const id = `sales/${address}/${saleId}`;
+  const id = event.params.saleId.toString();
 
   let sale = Sale.load(id);
 

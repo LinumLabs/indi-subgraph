@@ -11,7 +11,7 @@ import {
   URI,
   WhitelistUpdated,
 } from "../generated/Token/Token";
-import { Token, Approval, Whitelist } from "../generated/schema";
+import { Token, TokenBalance, Approval, Whitelist } from "../generated/schema";
 import { BigInt, log } from "@graphprotocol/graph-ts";
 
 const GENESIS_ADDRESS = "0x0000000000000000000000000000000000000000";
@@ -19,7 +19,7 @@ const GENESIS_ADDRESS = "0x0000000000000000000000000000000000000000";
 export function handleApprovalForAll(event: ApprovalForAll): void {
   const address = event.params.account.toHex();
   const operator = event.params.operator.toHex();
-  const id = `approvals/${address}/${operator}`;
+  const id = `${address}/${operator}`;
 
   let approval = Approval.load(id);
 
@@ -37,14 +37,11 @@ export function handleApprovalForAll(event: ApprovalForAll): void {
 }
 
 export function handleMint(event: Mint): void {
-  const address = event.transaction.from.toHex();
   const tokenId = event.params.tokenId.toString();
-  const id = `tokens/${address}/${tokenId}`;
 
-  let token = Token.load(id);
+  let token = Token.load(tokenId);
 
   if (token != null) {
-    token.tokenId = event.params.tokenId;
     token.categoryId = event.params.categoryId;
     token.uri = event.params.uri;
     token.minter = event.transaction.from;
@@ -53,6 +50,20 @@ export function handleMint(event: Mint): void {
     token.updatedAt = event.block.timestamp;
 
     token.save();
+  }
+
+  const address = event.transaction.from.toHex();
+  const tokenBalanceId = `${address}/${tokenId}`;
+
+  let tokenBalance = TokenBalance.load(tokenBalanceId);
+
+  if (tokenBalance !== null) {
+    tokenBalance.token = tokenId;
+    tokenBalance.owner = event.transaction.from;
+    tokenBalance.insertedAt = event.block.timestamp;
+    tokenBalance.updatedAt = event.block.timestamp;
+
+    tokenBalance.save();
   }
 }
 
@@ -73,51 +84,46 @@ export function handleTransferSingle(event: TransferSingle): void {
   const toAddress = event.params.to.toHex();
   const tokenId = event.params.id.toString();
 
-  const fromTokenId = `tokens/${fromAddress}/${tokenId}`;
+  const fromTokenBalanceId = `${fromAddress}/${tokenId}`;
 
-  let fromToken = Token.load(fromTokenId);
+  let fromTokenBalance = TokenBalance.load(fromTokenBalanceId);
 
-  if (fromToken == null) {
-    fromToken = new Token(fromTokenId);
-    fromToken.amount = BigInt.fromI32(0);
-    fromToken.owner = event.params.from;
-    fromToken.insertedAt = event.block.timestamp;
+  if (fromTokenBalance == null) {
+    fromTokenBalance = new TokenBalance(fromTokenBalanceId);
+    fromTokenBalance.amount = BigInt.fromI32(0);
+    fromTokenBalance.owner = event.params.from;
+    fromTokenBalance.insertedAt = event.block.timestamp;
   }
 
-  fromToken.amount = fromToken.amount.minus(event.params.value);
-  fromToken.updatedAt = event.block.timestamp;
+  fromTokenBalance.amount = fromTokenBalance.amount.minus(event.params.value);
+  fromTokenBalance.updatedAt = event.block.timestamp;
 
-  if (event.params.from.toHex() != GENESIS_ADDRESS) fromToken.save();
+  if (event.params.from.toHex() != GENESIS_ADDRESS) fromTokenBalance.save();
 
-  const toTokenId = `tokens/${toAddress}/${tokenId}`;
+  const toTokenBalanceId = `${toAddress}/${tokenId}`;
 
-  let toToken = Token.load(toTokenId);
+  let toTokenBalance = TokenBalance.load(toTokenBalanceId);
 
-  if (toToken == null) {
-    toToken = new Token(toTokenId);
-    toToken.amount = BigInt.fromI32(0);
-    toToken.owner = event.params.to;
+  if (toTokenBalance == null) {
+    toTokenBalance = new TokenBalance(toTokenBalanceId);
+    toTokenBalance.amount = BigInt.fromI32(0);
+    toTokenBalance.owner = event.params.to;
 
     // Track out of ecosystem transfers.
-    toToken.tokenId = fromToken.tokenId;
-    toToken.categoryId = fromToken.categoryId;
-    toToken.uri = fromToken.uri;
-    toToken.minter = fromToken.minter;
-    toToken.transaction = fromToken.transaction;
-    toToken.insertedAt = event.block.timestamp;
+    toTokenBalance.token = fromTokenBalance.token;
+    toTokenBalance.insertedAt = event.block.timestamp;
   }
 
-  toToken.amount = toToken.amount.plus(event.params.value);
-  toToken.updatedAt = event.block.timestamp;
+  toTokenBalance.amount = toTokenBalance.amount.plus(event.params.value);
+  toTokenBalance.updatedAt = event.block.timestamp;
 
-  toToken.save();
+  toTokenBalance.save();
 }
 
 export function handleURI(event: URI): void {}
 
 export function handleWhitelistUpdated(event: WhitelistUpdated): void {
-  const address = event.params.addressSet.toHex();
-  const id = `whitelists/${address}`;
+  const id = event.params.addressSet.toHex();
 
   let whitelist = Whitelist.load(id);
 
