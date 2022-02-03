@@ -46,24 +46,9 @@ export function handleMint(event: Mint): void {
     token.uri = event.params.uri;
     token.minter = event.transaction.from;
     token.transaction = event.transaction.hash;
-    token.insertedAt = event.block.timestamp;
     token.updatedAt = event.block.timestamp;
 
     token.save();
-  }
-
-  const address = event.transaction.from.toHex();
-  const tokenBalanceId = `${address}/${tokenId}`;
-
-  let tokenBalance = TokenBalance.load(tokenBalanceId);
-
-  if (tokenBalance !== null) {
-    tokenBalance.token = tokenId;
-    tokenBalance.owner = event.transaction.from;
-    tokenBalance.insertedAt = event.block.timestamp;
-    tokenBalance.updatedAt = event.block.timestamp;
-
-    tokenBalance.save();
   }
 }
 
@@ -83,6 +68,15 @@ export function handleTransferSingle(event: TransferSingle): void {
   const fromAddress = event.params.from.toHex();
   const toAddress = event.params.to.toHex();
   const tokenId = event.params.id.toString();
+
+  if (event.params.from.toHex() == GENESIS_ADDRESS) {
+    let token = new Token(tokenId);
+
+    token.amount = event.params.value;
+    token.insertedAt = event.block.timestamp;
+    token.updatedAt = event.block.timestamp;
+    token.save();
+  }
 
   const fromTokenBalanceId = `${fromAddress}/${tokenId}`;
 
