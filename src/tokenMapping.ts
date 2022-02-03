@@ -87,6 +87,7 @@ export function handleTransferSingle(event: TransferSingle): void {
     fromTokenBalance.amount = BigInt.fromI32(0);
     fromTokenBalance.owner = event.params.from;
     fromTokenBalance.insertedAt = event.block.timestamp;
+    fromTokenBalance.token = tokenId;
   }
 
   fromTokenBalance.amount = fromTokenBalance.amount.minus(event.params.value);
@@ -102,10 +103,8 @@ export function handleTransferSingle(event: TransferSingle): void {
     toTokenBalance = new TokenBalance(toTokenBalanceId);
     toTokenBalance.amount = BigInt.fromI32(0);
     toTokenBalance.owner = event.params.to;
-
-    // Track out of ecosystem transfers.
-    toTokenBalance.token = fromTokenBalance.token;
     toTokenBalance.insertedAt = event.block.timestamp;
+    toTokenBalance.token = tokenId;
   }
 
   toTokenBalance.amount = toTokenBalance.amount.plus(event.params.value);
