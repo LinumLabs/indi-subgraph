@@ -1,7 +1,9 @@
 type Token @entity {
   id: ID!
   amount: BigInt!
-  categoryId: String
+  name: String
+  description: String
+  image: String
   uri: String
   minter: Bytes
   transaction: Bytes
