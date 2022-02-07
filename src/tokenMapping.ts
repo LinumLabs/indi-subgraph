@@ -12,7 +12,7 @@ import {
   WhitelistUpdated,
 } from "../generated/Token/Token";
 import { Token, TokenBalance, Approval, Whitelist } from "../generated/schema";
-import { BigInt, log } from "@graphprotocol/graph-ts";
+import { BigInt, ipfs, json } from "@graphprotocol/graph-ts";
 
 const GENESIS_ADDRESS = "0x0000000000000000000000000000000000000000";
 
@@ -42,7 +42,25 @@ export function handleMint(event: Mint): void {
   let token = Token.load(tokenId);
 
   if (token != null) {
-    token.categoryId = event.params.categoryId;
+    let result = ipfs.cat(event.params.uri);
+
+    if (!result) {
+      return;
+    } else {
+      const metadata = json.fromBytes(result);
+      const metadataObj = metadata.toObject();
+
+      const name = metadataObj.get("name");
+      const description = metadataObj.get("description");
+      const image = metadataObj.get("image");
+
+      if (!name || !description || !image) return;
+
+      token.name = name.toString();
+      token.description = description.toString();
+      token.image = image.toString();
+    }
+
     token.uri = event.params.uri;
     token.minter = event.transaction.from;
     token.transaction = event.transaction.hash;
