@@ -58,7 +58,9 @@ export function handleMint(event: Mint): void {
 
       token.name = name.toString();
       token.description = description.toString();
-      token.image = image.toString();
+      token.image = image.toString().includes("ipfs://")
+        ? image.toString().replace("ipfs://", "https://ipfs.io/ipfs/")
+        : image.toString();
     }
 
     token.uri = event.params.uri;
