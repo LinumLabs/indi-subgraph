@@ -53,14 +53,24 @@ export function handleMint(event: Mint): void {
       const name = metadataObj.get("name");
       const description = metadataObj.get("description");
       const image = metadataObj.get("image");
+      const collection = metadataObj.get("collection");
+      const category = metadataObj.get("category");
+      const minterName = metadataObj.get("minterName");
+      const minterAvatarUri = metadataObj.get("minterAvatarUri");
 
-      if (!name || !description || !image) return;
-
-      token.name = name.toString();
-      token.description = description.toString();
-      token.image = image.toString().includes("ipfs://")
-        ? image.toString().replace("ipfs://", "https://ipfs.io/ipfs/")
-        : image.toString();
+      token.name = name ? name.toString() : null;
+      token.description = description ? description.toString() : null;
+      token.image = image
+        ? image.toString().includes("ipfs://")
+          ? image.toString().replace("ipfs://", "https://ipfs.io/ipfs/")
+          : image.toString()
+        : null;
+      token.collection = collection ? collection.toString() : null;
+      token.category = category ? category.toString() : null;
+      token.minterName = minterName ? minterName.toString() : null;
+      token.minterAvatarUri = minterAvatarUri
+        ? minterAvatarUri.toString()
+        : null;
     }
 
     token.uri = event.params.uri;

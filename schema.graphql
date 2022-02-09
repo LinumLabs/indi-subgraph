@@ -4,6 +4,10 @@ type Token @entity {
   name: String
   description: String
   image: String
+  category: String
+  collection: String
+  minterName: String
+  minterAvatarUri: String
   uri: String
   minter: Bytes
   transaction: Bytes
