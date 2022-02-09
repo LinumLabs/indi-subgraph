@@ -42,7 +42,7 @@ export function handleMint(event: Mint): void {
   let token = Token.load(tokenId);
 
   if (token != null) {
-    let result = ipfs.cat(event.params.uri);
+    let result = ipfs.cat(event.params.uri.replace("ipfs://", ""));
 
     if (!result) {
       return;
