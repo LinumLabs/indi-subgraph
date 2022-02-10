@@ -12,9 +12,28 @@ import {
   WhitelistUpdated,
 } from "../generated/Token/Token";
 import { Token, TokenBalance, Approval, Whitelist } from "../generated/schema";
-import { BigInt, ipfs, json } from "@graphprotocol/graph-ts";
+import {
+  BigInt,
+  ipfs,
+  json,
+  Bytes,
+  JSONValue,
+  TypedMap,
+} from "@graphprotocol/graph-ts";
 
 const GENESIS_ADDRESS = "0x0000000000000000000000000000000000000000";
+
+const getMetadata = (uri: string): Bytes => {
+  let result = ipfs.cat(uri.replace("ipfs://", ""));
+  while (!result) result = ipfs.cat(uri.replace("ipfs://", ""));
+  return result as Bytes;
+};
+
+const getMetadataValue = (
+  metadataObj: TypedMap<string, JSONValue>,
+  key: string
+): string | null =>
+  metadataObj.get(key) ? (metadataObj.get(key) as JSONValue).toString() : null;
 
 export function handleApprovalForAll(event: ApprovalForAll): void {
   const address = event.params.account.toHex();
@@ -42,36 +61,29 @@ export function handleMint(event: Mint): void {
   let token = Token.load(tokenId);
 
   if (token != null) {
-    let result = ipfs.cat(event.params.uri.replace("ipfs://", ""));
+    let result = getMetadata(event.params.uri);
 
-    if (!result) {
-      return;
-    } else {
-      const metadata = json.fromBytes(result);
-      const metadataObj = metadata.toObject();
+    const metadata = json.fromBytes(result);
+    const metadataObj = metadata.toObject();
 
-      const name = metadataObj.get("name");
-      const description = metadataObj.get("description");
-      const image = metadataObj.get("image");
-      const collection = metadataObj.get("collection");
-      const category = metadataObj.get("category");
-      const minterName = metadataObj.get("minterName");
-      const minterAvatarUri = metadataObj.get("minterAvatarUri");
+    const name = getMetadataValue(metadataObj, "name");
+    const description = getMetadataValue(metadataObj, "description");
+    const image = getMetadataValue(metadataObj, "image");
+    const collection = getMetadataValue(metadataObj, "collection");
+    const category = getMetadataValue(metadataObj, "category");
+    const minterName = getMetadataValue(metadataObj, "minterName");
+    const minterAvatarUri = getMetadataValue(metadataObj, "minterAvatarUri");
 
-      token.name = name ? name.toString() : null;
-      token.description = description ? description.toString() : null;
-      token.image = image
-        ? image.toString().includes("ipfs://")
-          ? image.toString().replace("ipfs://", "https://ipfs.io/ipfs/")
-          : image.toString()
-        : null;
-      token.collection = collection ? collection.toString() : null;
-      token.category = category ? category.toString() : null;
-      token.minterName = minterName ? minterName.toString() : null;
-      token.minterAvatarUri = minterAvatarUri
-        ? minterAvatarUri.toString()
-        : null;
-    }
+    token.name = name;
+    token.description = description;
+    token.image =
+      image && image.includes("ipfs://")
+        ? image.replace("ipfs://", "https://ipfs.io/ipfs/")
+        : image;
+    token.collection = collection;
+    token.category = category;
+    token.minterName = minterName;
+    token.minterAvatarUri = minterAvatarUri;
 
     token.uri = event.params.uri;
     token.minter = event.transaction.from;
