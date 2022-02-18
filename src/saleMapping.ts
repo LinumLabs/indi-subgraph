@@ -65,16 +65,22 @@ export function handleOwnershipTransferred(event: OwnershipTransferred): void {}
 export function handlePurchase(event: PurchaseEvent): void {
   const id = event.transaction.hash.toHex();
 
-  let purchase = new Purchase(id);
+  const saleId = event.params.saleId.toString();
+  let sale = Sale.load(saleId);
 
-  purchase.sale = event.params.saleId.toString();
-  purchase.buyer = event.params.recipient;
-  purchase.amount = event.params.quantity;
-  purchase.transaction = event.transaction.hash;
-  purchase.insertedAt = event.block.timestamp;
-  purchase.updatedAt = event.block.timestamp;
+  if (sale != null) {
+    let purchase = new Purchase(id);
 
-  purchase.save();
+    purchase.sale = saleId;
+    purchase.buyer = event.params.recipient;
+    purchase.seller = sale.seller;
+    purchase.amount = event.params.quantity;
+    purchase.transaction = event.transaction.hash;
+    purchase.insertedAt = event.block.timestamp;
+    purchase.updatedAt = event.block.timestamp;
+
+    purchase.save();
+  }
 }
 
 export function handleSaleCancelled(event: SaleCancelled): void {

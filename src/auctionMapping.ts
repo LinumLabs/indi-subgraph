@@ -47,16 +47,22 @@ export function handleBalanceUpdated(event: BalanceUpdated): void {
 export function handleBidPlaced(event: BidPlaced): void {
   const id = event.transaction.hash.toHex();
 
-  let bid = new Bid(id);
+  const auctionId = event.params.auctionId.toString();
+  let auction = Auction.load(auctionId);
 
-  bid.auction = event.params.auctionId.toString();
-  bid.price = event.params.amount;
-  bid.bidder = event.transaction.from;
-  bid.transaction = event.transaction.hash;
-  bid.insertedAt = event.block.timestamp;
-  bid.updatedAt = event.block.timestamp;
+  if (auction != null) {
+    let bid = new Bid(id);
 
-  bid.save();
+    bid.auction = auctionId;
+    bid.price = event.params.amount;
+    bid.bidder = event.transaction.from;
+    bid.seller = auction.seller;
+    bid.transaction = event.transaction.hash;
+    bid.insertedAt = event.block.timestamp;
+    bid.updatedAt = event.block.timestamp;
+
+    bid.save();
+  }
 }
 
 export function handleClaimNFT(event: ClaimNFT): void {

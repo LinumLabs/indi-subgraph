@@ -73,6 +73,7 @@ type Purchase @entity {
   id: ID!
   amount: BigInt!
   buyer: Bytes!
+  seller: Bytes!
   transaction: Bytes!
   insertedAt: BigInt!
   updatedAt: BigInt!
@@ -83,6 +84,7 @@ type Bid @entity {
   id: ID!
   price: BigInt!
   bidder: Bytes!
+  seller: Bytes!
   transaction: Bytes!
   insertedAt: BigInt!
   updatedAt: BigInt!
