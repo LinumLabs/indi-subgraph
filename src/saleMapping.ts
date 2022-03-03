@@ -29,16 +29,21 @@ export function handleBalanceUpdated(event: BalanceUpdated): void {
 export function handleNFTsReclaimed(event: NFTsReclaimed): void {
   const id = event.transaction.hash.toHex();
 
-  let claim = new SaleClaim(id);
+  const saleId = event.params.id.toString();
+  let sale = Sale.load(saleId);
 
-  claim.sale = event.params.id.toString();
-  claim.claimer = event.params.owner;
-  claim.amount = event.params.amount;
-  claim.transaction = event.transaction.hash;
-  claim.insertedAt = event.block.timestamp;
-  claim.updatedAt = event.block.timestamp;
+  if (sale != null) {
+    let claim = new SaleClaim(id);
 
-  claim.save();
+    claim.sale = saleId;
+    claim.claimer = event.params.owner;
+    claim.amount = event.params.amount;
+    claim.transaction = event.transaction.hash;
+    claim.insertedAt = event.block.timestamp;
+    claim.updatedAt = event.block.timestamp;
+
+    claim.save();
+  }
 }
 
 export function handleNewSale(event: NewSale): void {

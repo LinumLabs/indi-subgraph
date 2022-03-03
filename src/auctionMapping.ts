@@ -68,15 +68,20 @@ export function handleBidPlaced(event: BidPlaced): void {
 export function handleClaimNFT(event: ClaimNFT): void {
   const id = event.transaction.hash.toHex();
 
-  let claim = new AuctionClaim(id);
+  const auctionId = event.params.auctionId.toString();
+  let auction = Auction.load(auctionId);
 
-  claim.auction = event.params.auctionId.toString();
-  claim.claimer = event.params.recipient;
-  claim.transaction = event.transaction.hash;
-  claim.insertedAt = event.block.timestamp;
-  claim.updatedAt = event.block.timestamp;
+  if (auction != null) {
+    let claim = new AuctionClaim(id);
 
-  claim.save();
+    claim.auction = auctionId;
+    claim.claimer = event.params.recipient;
+    claim.transaction = event.transaction.hash;
+    claim.insertedAt = event.block.timestamp;
+    claim.updatedAt = event.block.timestamp;
+
+    claim.save();
+  }
 }
 
 export function handleNewAuction(event: NewAuction): void {
