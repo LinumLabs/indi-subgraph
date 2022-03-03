@@ -1,7 +1,5 @@
 import {
-  Token as TokenContract,
   ApprovalForAll,
-  Mint,
   OwnershipTransferred,
   RedeemDetailsSet,
   RoyaltyDetailsSet,
@@ -11,7 +9,9 @@ import {
   URI,
   WhitelistUpdated,
 } from "../generated/Token/Token";
+
 import { Token, TokenBalance, Approval, Whitelist } from "../generated/schema";
+
 import {
   BigInt,
   ipfs,
@@ -53,45 +53,6 @@ export function handleApprovalForAll(event: ApprovalForAll): void {
   approval.updatedAt = event.block.timestamp;
 
   approval.save();
-}
-
-export function handleMint(event: Mint): void {
-  const tokenId = event.params.tokenId.toString();
-
-  let token = Token.load(tokenId);
-
-  if (token != null) {
-    let result = getMetadata(event.params.uri);
-
-    const metadata = json.fromBytes(result);
-    const metadataObj = metadata.toObject();
-
-    const name = getMetadataValue(metadataObj, "name");
-    const description = getMetadataValue(metadataObj, "description");
-    const image = getMetadataValue(metadataObj, "image");
-    const collection = getMetadataValue(metadataObj, "collection");
-    const category = getMetadataValue(metadataObj, "category");
-    const minterName = getMetadataValue(metadataObj, "minterName");
-    const minterAvatarUri = getMetadataValue(metadataObj, "minterAvatarUri");
-
-    token.name = name;
-    token.description = description;
-    token.image =
-      image && image.includes("ipfs://")
-        ? image.replace("ipfs://", "https://ipfs.io/ipfs/")
-        : image;
-    token.collection = collection;
-    token.category = category;
-    token.minterName = minterName;
-    token.minterAvatarUri = minterAvatarUri;
-
-    token.uri = event.params.uri;
-    token.minter = event.transaction.from;
-    token.transaction = event.transaction.hash;
-    token.updatedAt = event.block.timestamp;
-
-    token.save();
-  }
 }
 
 export function handleOwnershipTransferred(event: OwnershipTransferred): void {}
@@ -155,7 +116,44 @@ export function handleTransferSingle(event: TransferSingle): void {
   toTokenBalance.save();
 }
 
-export function handleURI(event: URI): void {}
+export function handleURI(event: URI): void {
+  const tokenId = event.params.id.toString();
+
+  let token = Token.load(tokenId);
+
+  if (token != null) {
+    let result = getMetadata(event.params.value);
+
+    const metadata = json.fromBytes(result);
+    const metadataObj = metadata.toObject();
+
+    const name = getMetadataValue(metadataObj, "name");
+    const description = getMetadataValue(metadataObj, "description");
+    const image = getMetadataValue(metadataObj, "image");
+    const collection = getMetadataValue(metadataObj, "collection");
+    const category = getMetadataValue(metadataObj, "category");
+    const minterName = getMetadataValue(metadataObj, "minterName");
+    const minterAvatarUri = getMetadataValue(metadataObj, "minterAvatarUri");
+
+    token.name = name;
+    token.description = description;
+    token.image =
+      image && image.includes("ipfs://")
+        ? image.replace("ipfs://", "https://ipfs.io/ipfs/")
+        : image;
+    token.collection = collection;
+    token.category = category;
+    token.minterName = minterName;
+    token.minterAvatarUri = minterAvatarUri;
+
+    token.uri = event.params.value;
+    token.minter = event.transaction.from;
+    token.transaction = event.transaction.hash;
+    token.updatedAt = event.block.timestamp;
+
+    token.save();
+  }
+}
 
 export function handleWhitelistUpdated(event: WhitelistUpdated): void {
   const id = event.params.addressSet.toHex();

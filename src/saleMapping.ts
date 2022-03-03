@@ -1,5 +1,4 @@
 import {
-  Sale as SaleContract,
   BalanceUpdated,
   NFTsReclaimed,
   NewSale,
@@ -7,6 +6,7 @@ import {
   Purchase as PurchaseEvent,
   SaleCancelled,
 } from "../generated/Sale/Sale";
+
 import { Sale, Purchase, SaleClaim, SaleBalance } from "../generated/schema";
 
 export function handleBalanceUpdated(event: BalanceUpdated): void {

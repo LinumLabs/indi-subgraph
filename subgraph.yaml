@@ -27,6 +27,8 @@ dataSources:
           handler: handleContractStatusChanged
         - event: CurrencyStatusChanged(indexed address,indexed bool)
           handler: handleCurrencyStatusChanged
+        - event: FeeVariablesChanged(indexed uint256,indexed uint256)
+          handler: handleFeeVariablesChanged
         - event: OwnershipTransferred(indexed address,indexed address)
           handler: handleOwnershipTransferred
         - event: SystemWalletUpdated(address)
@@ -45,7 +47,6 @@ dataSources:
       language: wasm/assemblyscript
       entities:
         - ApprovalForAll
-        - Mint
         - OwnershipTransferred
         - RedeemDetailsSet
         - RoyaltyDetailsSet
@@ -60,8 +61,6 @@ dataSources:
       eventHandlers:
         - event: ApprovalForAll(indexed address,indexed address,bool)
           handler: handleApprovalForAll
-        - event: Mint(indexed uint256,string,string)
-          handler: handleMint
         - event: OwnershipTransferred(indexed address,indexed address)
           handler: handleOwnershipTransferred
         - event: RedeemDetailsSet(indexed uint256,indexed bool,indexed string)

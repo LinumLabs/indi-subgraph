@@ -1,5 +1,4 @@
 import {
-  Auction as AuctionContract,
   AuctionCancelled,
   BalanceUpdated,
   BidPlaced,
@@ -7,6 +6,7 @@ import {
   NewAuction,
   OwnershipTransferred,
 } from "../generated/Auction/Auction";
+
 import {
   Auction,
   Bid,
