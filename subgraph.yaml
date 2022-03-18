@@ -6,8 +6,8 @@ dataSources:
     name: Registry
     network: mumbai
     source:
-      address: "0xfC9da3A1F08cC08479b4543007F284d60d17B17F"
-      startBlock: 25358985
+      address: "0x3aCBb0e28C77cC185775a49d0ffAc24443CC0535"
+      startBlock: 25564951
       abi: Registry
     mapping:
       kind: ethereum/events
@@ -38,8 +38,8 @@ dataSources:
     name: Token
     network: mumbai
     source:
-      address: "0x488B25CCf834d3Ab3c51D54949A078ECEADFDf76"
-      startBlock: 25358984
+      address: "0x69C4e57A6A13a112da428070b6d8F473A0Fd3e98"
+      startBlock: 25564950
       abi: Token
     mapping:
       kind: ethereum/events
@@ -82,8 +82,8 @@ dataSources:
     name: Sale
     network: mumbai
     source:
-      address: "0x263438d0F93220c25d38b8d86c809da2Cca7e286"
-      startBlock: 25358987
+      address: "0xfb1a35EF05cBE259AAB1979EE067488FeF293F6a"
+      startBlock: 25564952
       abi: Sale
     mapping:
       kind: ethereum/events
@@ -117,8 +117,8 @@ dataSources:
     name: Auction
     network: mumbai
     source:
-      address: "0xC36f3A085375aDe564c51569FfCE4F2F67216E27"
-      startBlock: 25358989
+      address: "0xD32838B95b8Ea2073591782359DD73db63bc79Bb"
+      startBlock: 25564953
       abi: Auction
     mapping:
       kind: ethereum/events
